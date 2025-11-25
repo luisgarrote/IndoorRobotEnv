@@ -1567,24 +1567,24 @@ class IndoorRobot2025Env(gym.Env):
         ax.set_yticks([])
 
 
+        if self._last_action>=0:
+            v, w = self.mapping[self._last_action]
 
-        v, w = self.mapping[self._last_action]
 
+            x_arr=[self.robot_pose[0]]
+            y_arr=[self.robot_pose[1]]
 
-        x_arr=[self.robot_pose[0]]
-        y_arr=[self.robot_pose[1]]
-
-        x=self.robot_pose[0]
-        y=self.robot_pose[1]
-        theta=self.robot_pose[2]
-        for i in range(50):
-            x=x+v*0.1*math.cos(theta)
-            y=y+v*0.1*math.sin(theta)
-            theta=theta+w*0.1
-            x_arr.append(x)
-            y_arr.append(y)
-        
-        ax.plot(x_arr, y_arr, color='#5a855f', linewidth=1)
+            x=self.robot_pose[0]
+            y=self.robot_pose[1]
+            theta=self.robot_pose[2]
+            for i in range(50):
+                x=x+v*0.1*math.cos(theta)
+                y=y+v*0.1*math.sin(theta)
+                theta=theta+w*0.1
+                x_arr.append(x)
+                y_arr.append(y)
+            
+            ax.plot(x_arr, y_arr, color='#5a855f', linewidth=1)
 
 
 
