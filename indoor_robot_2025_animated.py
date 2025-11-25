@@ -84,7 +84,7 @@ class IndoorRobot2025Env(gym.Env):
         self.np_random, _ = gym.utils.seeding.np_random(seed)
 
         # Discrete steering actions
-        self.action_space = spaces.Discrete(3)
+        #self.action_space = spaces.Discrete(3)
 
         # We'll represent the robot pose as [x, y, theta]
         # but observation depends on mode
@@ -775,9 +775,9 @@ class IndoorRobot2025Env(gym.Env):
             terminated = True
 
         # path following bonus (encourage staying close to smoothed path)
-        path_error = self._distance_to_path(self.robot_pose[0], self.robot_pose[1])
+        path_error = self._distance_to_path(self.robot_pose[0]+0.2*math.cos(self.robot_pose[2]), self.robot_pose[1]+0.2*math.sin(self.robot_pose[2]))
         reward = 0.0
-        reward += 1.5 * progress          # forward progress to goal
+        reward += 0.05 * progress          # forward progress to goal
         reward -= 0.01                     # time penalty
         reward -= 0.2 * path_error         # penalize deviation from planned path
         reward += collision_penalty
