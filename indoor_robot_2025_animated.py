@@ -1132,7 +1132,7 @@ class IndoorRobot2025Env(gym.Env):
             error=_compute_lateral_error(self.robot_pose,self.smoothed_path_world)
             return np.array([dx_n, dy_n, th, error], dtype=np.float32)
         elif self.observation_mode == ObservationMode.LOCAL:
-            return self.local_grid
+            return self.local_grid.flatten()
 
 
         # default fallback
