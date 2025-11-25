@@ -51,7 +51,7 @@ class IndoorRobot2025Env(gym.Env):
       2: go forward + steer right
     """
 
-    metadata = {"render_modes": ["human", "rgb_array","ignore_mode"], "render_fps": 5}
+    metadata = {"render_modes": ["human", "rgb_array","ignore_mode"], "render_fps": 10}
 
     def __init__(
         self,
@@ -736,7 +736,7 @@ class IndoorRobot2025Env(gym.Env):
         v, w = self.mapping[action]
 
         # Simple unicycle integration
-        h = 1.0
+        h = 0.1
         x, y, th = self.robot_pose
         dx = h * v * math.cos(th)
         dy = h * v * math.sin(th)
@@ -1421,7 +1421,7 @@ class IndoorRobot2025Env(gym.Env):
         res = self.grid_resolution
         if self._static_background_cache is None:
             # create an offscreen figure to render static tiles
-            fig2, ax2 = plt.subplots(figsize=(10,6), dpi=200)
+            fig2, ax2 = plt.subplots(figsize=(10,10), dpi=200)
             ax2.set_xlim(-limit, limit)
             ax2.set_ylim(-limit, limit)
             ax2.set_aspect("equal")
