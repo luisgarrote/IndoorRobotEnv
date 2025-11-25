@@ -61,7 +61,7 @@ class IndoorRobot2025Env(gym.Env):
         observation_mode: ObservationMode = ObservationMode.LOCAL,
         render_mode: Optional[str] = "rgb_array",
         scenario_split: str = "train",  # "train" or "test"
-        dynamic_objs=False,
+        dynamic_objs=True,
         seed: Optional[int] = None,
     ):
         super().__init__()
