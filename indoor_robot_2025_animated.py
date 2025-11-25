@@ -88,8 +88,8 @@ class IndoorRobot2025Env(gym.Env):
         # but observation depends on mode
   
         self._dummy_obs_space = spaces.Box(
-            low=-1.0,
-            high=1.0,
+            low=-1000.0,
+            high=1000.0,
             shape=(local_grid_size,local_grid_size),
             dtype=np.float32,
         )
