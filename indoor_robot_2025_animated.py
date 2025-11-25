@@ -61,7 +61,7 @@ class IndoorRobot2025Env(gym.Env):
         observation_mode: ObservationMode = ObservationMode.LOCAL,
         render_mode: Optional[str] = "rgb_array",
         scenario_split: str = "train",  # "train" or "test"
-        dynamic_objs=True,
+        dynamic_objs=False,
         seed: Optional[int] = None,
     ):
         super().__init__()
@@ -339,13 +339,13 @@ class IndoorRobot2025Env(gym.Env):
         #   2: S-corridor (two turns)
         #   3: plus-shaped intersection
         #   4,5: more narrow test scenarios
-
+        CORRIDOR_HALF_WIDTH = 3
         if scenario_id == 0:
             # Main vertical corridor
-            carve_rect(4, N - 5, c - 2, c + 2)
+            carve_rect(4, N - 5, c - CORRIDOR_HALF_WIDTH, c + CORRIDOR_HALF_WIDTH)
             # Left branch near middle
             mid = c + (N // 6)
-            carve_rect(mid - 2, mid + 2, 4, c + 2)
+            carve_rect(mid - CORRIDOR_HALF_WIDTH, mid + CORRIDOR_HALF_WIDTH, 4, c + CORRIDOR_HALF_WIDTH)
             # Start region (bottom of main corridor)
             start_region = (5, 10, c - 1, c + 1)  # i_min, i_max, j_min, j_max
             # Goal region (end of left branch)
@@ -354,10 +354,10 @@ class IndoorRobot2025Env(gym.Env):
 
         elif scenario_id == 1:
             # Main vertical corridor
-            carve_rect(4, N - 5, c - 2, c + 2)
+            carve_rect(4, N - 5, c - CORRIDOR_HALF_WIDTH, c + CORRIDOR_HALF_WIDTH)
             # Right branch
             mid = c + (N // 6)
-            carve_rect(mid - 2, mid + 2, c - 2, N - 5)
+            carve_rect(mid - CORRIDOR_HALF_WIDTH, mid + CORRIDOR_HALF_WIDTH, c - CORRIDOR_HALF_WIDTH, N - 5)
             start_region = (5, 10, c - 1, c + 1)
             goal_region = (mid - 1, mid + 1, N - 10, N - 5)
             dyn_segments = [((mid, c - 1), (mid, c + 1))]
@@ -365,9 +365,9 @@ class IndoorRobot2025Env(gym.Env):
         elif scenario_id == 2:
             # S-shaped corridor
             # lower vertical
-            carve_rect(4, c, c - 2, c + 2)
+            carve_rect(4, c, c - CORRIDOR_HALF_WIDTH, c + CORRIDOR_HALF_WIDTH)
             # middle horizontal to the right
-            carve_rect(c - 2, c + 2, c, N - 5)
+            carve_rect(c - CORRIDOR_HALF_WIDTH, c + CORRIDOR_HALF_WIDTH, c, N - 5)
             # upper vertical going up
             carve_rect(c, N - 5, N - 7, N - 3)
 
@@ -377,8 +377,8 @@ class IndoorRobot2025Env(gym.Env):
 
         elif scenario_id == 3:
             # plus intersection
-            carve_rect(4, N - 5, c - 2, c + 2)     # vertical
-            carve_rect(c - 2, c + 2, 4, N - 5)     # horizontal
+            carve_rect(4, N - 5, c - CORRIDOR_HALF_WIDTH, c + CORRIDOR_HALF_WIDTH)     # vertical
+            carve_rect(c - CORRIDOR_HALF_WIDTH, c + CORRIDOR_HALF_WIDTH, 4, N - 5)     # horizontal
 
             start_region = (5, 10, c - 1, c + 1)
             goal_region = (N - 10, N - 6, c - 1, c + 1)
@@ -387,7 +387,7 @@ class IndoorRobot2025Env(gym.Env):
 
         elif scenario_id == 4:
             # narrow zig-zag (test)
-            width = 2
+            width = CORRIDOR_HALF_WIDTH
             carve_rect(4, c, c - width, c + width)
             carve_rect(c - width, c + width, c - 10, c + 10)
             carve_rect(c, N - 5, c - width, c + width)
@@ -398,9 +398,9 @@ class IndoorRobot2025Env(gym.Env):
 
         else:  # scenario_id == 5
             # U-shaped corridor (test)
-            carve_rect(4, N - 5, c - 2, c + 2)
-            carve_rect(4, 12, c + 2, N - 5)
-            carve_rect(N - 12, N - 5, c + 2, N - 5)
+            carve_rect(4, N - 5, c - CORRIDOR_HALF_WIDTH, c + CORRIDOR_HALF_WIDTH)
+            carve_rect(4, 12, c + CORRIDOR_HALF_WIDTH, N - 5)
+            carve_rect(N - 12, N - 5, c + CORRIDOR_HALF_WIDTH, N - 5)
 
             start_region = (5, 10, c - 1, c + 1)
             goal_region = (N - 10, N - 6, N - 8, N - 5)
@@ -738,7 +738,7 @@ class IndoorRobot2025Env(gym.Env):
         v, w = self.mapping[action]
 
         # Simple unicycle integration
-        h = 0.1
+        h = 1.0
         x, y, th = self.robot_pose
         dx = h * v * math.cos(th)
         dy = h * v * math.sin(th)
@@ -777,7 +777,7 @@ class IndoorRobot2025Env(gym.Env):
         # path following bonus (encourage staying close to smoothed path)
         path_error = self._distance_to_path(self.robot_pose[0]+0.2*math.cos(self.robot_pose[2]), self.robot_pose[1]+0.2*math.sin(self.robot_pose[2]))
         reward = 0.0
-        reward += 0.05 * progress          # forward progress to goal
+        reward += 1.5 * progress          # forward progress to goal
         reward -= 0.01                     # time penalty
         reward -= 0.2 * path_error         # penalize deviation from planned path
         reward += collision_penalty
@@ -938,8 +938,8 @@ class IndoorRobot2025Env(gym.Env):
         py = np.array([p[1] for p in self.smoothed_path_world])
         dx = px - x
         dy = py - y
-        dists = np.sqrt(dx * dx + dy * dy)
-        return float(np.min(dists))
+        dists = dx * dx + dy * dy
+        return math.sqrt(float(np.min(dists)))
 
     # ------------------------------------------------------------------
     # Dynamic obstacles update
