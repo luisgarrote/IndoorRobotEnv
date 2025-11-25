@@ -1172,7 +1172,7 @@ class IndoorRobot2025Env(gym.Env):
 
             fig.canvas.draw()
             #image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-            rgba = np.asarray(canvas.buffer_rgba())   # modern API
+            rgba = np.asarray(fig.canvas.buffer_rgba())   # modern API
             image = rgba[..., :3]   
             image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
             plt.close(fig)
