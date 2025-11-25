@@ -1188,8 +1188,8 @@ class IndoorRobot2025Env(gym.Env):
         """
         # Size of the minimap (fraction of main plot)
         mini_ax = inset_axes(ax,
-                             width="25%",   # % of parent
-                             height="25%",
+                             width="30%",   # % of parent
+                             height="30%",
                              loc='upper right',
                              borderpad=1.0)
 
@@ -1316,6 +1316,7 @@ class IndoorRobot2025Env(gym.Env):
                 if(temp_grid[j][i]>0):
                     ax.add_artist( plt.Rectangle(((j-self.local_grid_size/2)*self.grid_resolution, (i-self.local_grid_size/2)*self.grid_resolution), self.grid_resolution, self.grid_resolution, fill=True, color='grey', linewidth=2))
                 elif(temp_grid[j][i]<-0.5):
+
                     ax.add_artist( plt.Rectangle(((j-self.local_grid_size/2)*self.grid_resolution, (i-self.local_grid_size/2)*self.grid_resolution), self.grid_resolution, self.grid_resolution, fill=False, color='black', linewidth=0.1))
 
 
@@ -1342,13 +1343,18 @@ class IndoorRobot2025Env(gym.Env):
         N = self.grid_size
         res = self.grid_resolution
         dy, dx = np.where(self.dynamic_grid == 1)
-        if len(dx) > 0:
+        for i in range(len(dx)):
             #print("On dx")
 
-            px = (dx - N/2) * res
-            py = (dy - N/2) * res
+            px = (dx[i] - N/2) * res
+            py = (dy[i] - N/2) * res
+            #print(px,py)
+
             px, py = self._world_to_robot_local(px, py)
 
+            #print(dx,dy)
+
+            #print(px,py)
             #ax.scatter(px, py, c="#d62728", s=50, marker="s", edgecolor="black")
             ax.add_artist(plt.Circle((px, py),  res/2.0, color="#d62728"))
 
@@ -1399,7 +1405,7 @@ class IndoorRobot2025Env(gym.Env):
             ax.plot([x[1], lx],[y[1], ly],"--", color='red', linewidth=1)
 
         plt.xticks(fontsize=10)
-        plt.text(-1, -3, r'Total Reward: '+str(self.total_reward), fontsize=10)
+        plt.text(-1, -3, r'Total Reward: '+str(round(self.total_reward , 3)), fontsize=10)
 
         ax.tick_params(left = False, right = False , labelleft = False , labelbottom = False, bottom = False)
  
@@ -1523,11 +1529,11 @@ class IndoorRobot2025Env(gym.Env):
         # dynamic obstacles
  
         dy, dx = np.where(self.dynamic_grid == 1)
-        if len(dx) > 0:
+        for i in range(len(dx)):
             #print("On dx")
 
-            px = (dx - N/2) * res
-            py = (dy - N/2) * res
+            px = (dx[i] - N/2) * res
+            py = (dy[i] - N/2) * res
             #ax.scatter(px, py, c="#d62728", s=50, marker="s", edgecolor="black")
             ax.add_artist(plt.Circle((px, py),  res/2.0, color="#d62728"))
 
