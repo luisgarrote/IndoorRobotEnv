@@ -61,6 +61,7 @@ class IndoorRobot2025Env(gym.Env):
         observation_mode: ObservationMode = ObservationMode.LOCAL,
         render_mode: Optional[str] = "rgb_array",
         scenario_split: str = "train",  # "train" or "test"
+        dynamic_objs=False,
         seed: Optional[int] = None,
     ):
         super().__init__()
@@ -77,6 +78,7 @@ class IndoorRobot2025Env(gym.Env):
         self.observation_mode = observation_mode
         self.render_mode = render_mode
         self.scenario_split = scenario_split
+        self.dynamic_objs=dynamic_objs
 
         # Gymnasium seeding
         self.np_random, _ = gym.utils.seeding.np_random(seed)
@@ -410,7 +412,7 @@ class IndoorRobot2025Env(gym.Env):
         sx, sy = self._grid_to_world(*start_ij)
         gx, gy = self._grid_to_world(*goal_ij)
 
-        self.robot_pose = np.array([sx, sy, 0.0], dtype=np.float32)
+        self.robot_pose = np.array([sx, sy, math.atan2(gy-sy,gx-sx)], dtype=np.float32)
         self.goal_position = np.array([gx, gy], dtype=np.float32)
 
         # Initialize heatmap
@@ -945,22 +947,24 @@ class IndoorRobot2025Env(gym.Env):
     def _update_dynamic_obstacles(self):
         # reset dynamic grid
         self.dynamic_grid[:, :] = 0
-        for dobj in self.dynamic_obstacles:
-            path = dobj["path"]
-            idx = dobj["idx"]
-            direction = dobj["dir"]
-            if len(path) == 0:
-                continue
-            # current position
-            i, j = path[idx]
-            self.dynamic_grid[i, j] = 1
-            # advance index (back-and-forth motion)
-            next_idx = idx + direction
-            if next_idx < 0 or next_idx >= len(path):
-                direction *= -1
+
+        if self.dynamic_objs:
+            for dobj in self.dynamic_obstacles:
+                path = dobj["path"]
+                idx = dobj["idx"]
+                direction = dobj["dir"]
+                if len(path) == 0:
+                    continue
+                # current position
+                i, j = path[idx]
+                self.dynamic_grid[i, j] = 1
+                # advance index (back-and-forth motion)
                 next_idx = idx + direction
-            dobj["idx"] = next_idx
-            dobj["dir"] = direction
+                if next_idx < 0 or next_idx >= len(path):
+                    direction *= -1
+                    next_idx = idx + direction
+                dobj["idx"] = next_idx
+                dobj["dir"] = direction
 
     # ------------------------------------------------------------------
     # Observations
