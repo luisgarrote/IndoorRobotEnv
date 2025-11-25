@@ -51,7 +51,7 @@ class IndoorRobot2025Env(gym.Env):
       2: go forward + steer right
     """
 
-    metadata = {"render_modes": ["human", "rgb_array","ignore_mode"], "render_fps": 20}
+    metadata = {"render_modes": ["human", "rgb_array","ignore_mode"], "render_fps": 5}
 
     def __init__(
         self,
