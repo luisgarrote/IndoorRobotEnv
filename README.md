@@ -6,9 +6,9 @@ Updated for **2025** with:
 
 - Multiple corridor-like **scenarios** (train / test splits)
 - **Static** and **dynamic** obstacles (moving blocks in corridors)
-- Automatic **A* global path planning** with shortcut **smoothing**
+- Automatic **A* global path planning** with path **smoothing**
 - Robot must reach the goal while implicitly following the planned path and avoiding obstacles
-- Several observation modes (pose only, pose + local map, global map)
+- Several observation modes (pose only, direction only, local map)
 - Clean 2D visualization using Matplotlib
 
 The environment is implemented in `IndoorRobot2025Env` and registered as
@@ -16,13 +16,13 @@ The environment is implemented in `IndoorRobot2025Env` and registered as
 
 ---
 
-## 🔧 Installation
+## Installation
 
 You need Python 3.9+.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/IndoorRobot2025.git
-cd IndoorRobot2025
+git clone https://github.com/luisgarrote/IndoorRobotEnv.git
+cd IndoorRobotEnv
 
 pip install -r requirements.txt
 pip install -e .
@@ -37,11 +37,15 @@ This will install the package `indoor_robot_2025` and register the environment
 
 ```python
 import gymnasium as gym
-import indoor_robot_2025   # just import to ensure registration
+from indoor_robot_2025_animated import IndoorRobot2025Env
+
+gym.register(
+    id="IndoorRobot2025-v0",
+    entry_point="indoor_robot_2025_animated:IndoorRobot2025Env",
+)
 
 env = gym.make("IndoorRobot2025-v0", render_mode="human")
 obs, info = env.reset()
-
 done = False
 while not done:
     action = env.action_space.sample()
@@ -54,12 +58,9 @@ env.close()
 
 ---
 
-## 📚 Environment Details
+## Environment Details
 
-- **Action space**: `Discrete(3)`
-  - `0`: go forward
-  - `1`: go forward + turn left
-  - `2`: go forward + turn right
+- **Action space**: `Discrete(10)`, set of linear and angular speeds predefined inside the environment
 
 - **Observation modes** (`observation_mode=`):
   - `ObservationMode.POSE_ONLY`:
@@ -87,12 +88,12 @@ env.close()
 - **Planner**:
   - A* on the static grid in discrete space
   - Result is converted to world coordinates
-  - Then a simple shortcut smoothing removes unnecessary waypoints
+  - Path is smoothed using simplified elastic bands
   - The smoothed path is available in `info["path_world"]` and drawn in the render
 
 ---
 
-## 👩‍🏫 For Students
+## For Students
 
 This repo is meant as a compact playground for:
 
@@ -106,6 +107,6 @@ You can plug this directly into standard Gymnasium-compatible RL code
 
 ---
 
-## 📄 License
+## License
 
 MIT License.
