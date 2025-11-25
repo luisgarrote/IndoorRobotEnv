@@ -1147,7 +1147,7 @@ class IndoorRobot2025Env(gym.Env):
 
         if self.render_mode == "human":
  
-            fig, (ax, ax2) = plt.subplots(1, 2,figsize=(4, 4))
+            fig, (ax, ax2) = plt.subplots(1, 2,figsize=(10, 6))
             #ax = plt.gca()
             self._draw_scene(ax)
             #plt.title(f"IndoorRobot2025 - scenario {self.scenario_id}")
@@ -1164,7 +1164,7 @@ class IndoorRobot2025Env(gym.Env):
                 return self._last_rgb
 
             plt.switch_backend("Agg")
-            fig, (ax, ax2) = plt.subplots(1, 2,figsize=(4, 4))
+            fig, (ax, ax2) = plt.subplots(1, 2,figsize=(10, 6))
             self._draw_scene(ax)
 
             self._draw_scene_local(ax2)
@@ -1421,7 +1421,7 @@ class IndoorRobot2025Env(gym.Env):
         res = self.grid_resolution
         if self._static_background_cache is None:
             # create an offscreen figure to render static tiles
-            fig2, ax2 = plt.subplots(figsize=(4,4), dpi=100)
+            fig2, ax2 = plt.subplots(figsize=(10,6), dpi=200)
             ax2.set_xlim(-limit, limit)
             ax2.set_ylim(-limit, limit)
             ax2.set_aspect("equal")
