@@ -33,7 +33,7 @@ This will install the package `indoor_robot_2025` and register the environment
 
 ---
 
-## 🧪 Quick Test
+## Quick Test
 
 ```python
 import gymnasium as gym
