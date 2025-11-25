@@ -1387,14 +1387,14 @@ class IndoorRobot2025Env(gym.Env):
 
 
 
-        closest=self._compute_lateral_error_point(self.robot_pose+[0.2*math.cos(self.robot_pose[2]),0.2*math.sin(self.robot_pose[2]),0],self.smoothed_path_world,self.goal_position)
+            closest=self._compute_lateral_error_point(self.robot_pose+[0.2*math.cos(self.robot_pose[2]),0.2*math.sin(self.robot_pose[2]),0],self.smoothed_path_world,self.goal_position)
 
-        
-        lx, ly = self._world_to_robot_local(closest[0], closest[1])
-        
+            
+            lx, ly = self._world_to_robot_local(closest[0], closest[1])
+            
 
-        
-        ax.plot([x[1], lx],[y[1], ly],"--", color='red', linewidth=1)
+            
+            ax.plot([x[1], lx],[y[1], ly],"--", color='red', linewidth=1)
 
         plt.xticks(fontsize=10)
         plt.text(-1, -3, r'Total Reward: '+str(self.total_reward), fontsize=10)
