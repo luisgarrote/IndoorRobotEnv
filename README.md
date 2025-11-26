@@ -63,14 +63,7 @@ env.close()
 - **Action space**: `Discrete(10)`, set of linear and angular speeds predefined inside the environment
 
 - **Observation modes** (`observation_mode=`):
-  - `ObservationMode.POSE_ONLY`:
-    - `np.array([dx_unit, dy_unit, theta])`
-  - `ObservationMode.POSE_AND_LOCAL_MAP`:
-    - `(pose_vector, local_occupancy_grid)`
-  - `ObservationMode.POSE_AND_LOCAL_INLINE`:
-    - `np.concatenate([pose_vector, local_occupancy_grid.flatten()])`
-  - `ObservationMode.GLOBAL_MAP`:
-    - `(robot_pose, global_occupancy_grid)`
+ TODO
 
 - **Grid**:
   - `grid_size` cells per side (default 64)
